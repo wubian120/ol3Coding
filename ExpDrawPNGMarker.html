@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Experiment Draw PNG Marker</title>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css" type="text/css">
+
+</head>
+<body>
+    <div class="map" id="main"></div>
+    <script src="http://openlayers.org/en/v3.16.0/build/ol.js"></script>
+    <script>
+        var shipMarker = new ol.Feature({
+           type:'icon',
+           geometry: new ol.geom.Point(ol.proj.fromLonLat([0,0]))
+        });
+
+        var geoMarker = new ol.Feature({
+            type:'geolocation',
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([120.62,31.32]))
+        });
+
+        var routeFeature = null;
+
+        var markerStyles ={
+            'route':new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    width:6,color:[237,212,0,0.8]
+                })
+            }),
+            'icon': new ol.style.Style({
+                image:new ol.style.Icon({
+                    anchor:[0.5,1],
+                    src:'../res/ship32.png'
+                })
+            }),
+            'geolocation':new ol.style.Style({
+                image:new ol.style.Icon({
+                    anchor:[0.5,1],
+                    src:'../res/location32.png'
+                })
+            })
+        };
+
+        var veclayer = new ol.layer.Vector({
+           source: new ol.source.Vector({
+               features:[shipMarker,geoMarker]
+           }),
+           style: function (feature) {
+               return markerStyles[feature.get('type')];
+           }
+        });
+
+        var main = new ol.Map({
+            target:document.getElementById('main'),
+            view: new ol.View({
+                center:[0,0],
+                zoom:2
+            }),
+            layers:[
+                new ol.layer.Tile({
+                    source: new ol.source.MapQuest({layer:'osm'})
+                }),
+                veclayer
+            ]
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ol Overlay</title>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <style>
+        #marker {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #088;
+            border-radius: 10px;
+            background-color: #0ff;
+            opacity: 0.5;
+        }
+        #location {
+            text-decoration: none;
+            color:white;
+            font-size: 11pt;
+            font-weight: bold;
+            text-shadow: black 0.1em 0.1em 0.2em;
+        }
+        .popover-content{
+            min-width: 180px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="http://openlayers.org/en/v3.16.0/build/ol.js"></script>
+
+<div class="map" id="main"></div>
+<div style="display: none;">
+    <a id="vienna" href="none" class="overlay">Vienna</a>
+    <div id="marker" title="Marker"></div>
+    <!--Popup-->
+    <div id="popup"></div>
+</div>
+<script>
+    var layer = new ol.layer.Tile({
+        source:new ol.source.MapQuest({layer:'sat'})
+    });
+    var main = new ol.Map({
+        layers:[layer],
+        target:'main',
+        view:new ol.View({
+            center:[0,0],
+            zoom:2
+        })
+    });
+
+    var pos = ol.proj.fromLonLat([16.3725,48.2088889]);
+
+    var marker = new ol.Overlay({
+       position:pos,
+       positioning:'center-center',
+       element:document.getElementById('marker'),
+       stopEvent:false
+    });
+
+    main.addOverlay(marker);
+
+    var vienna = new ol.Overlay({
+       position:pos,
+       element:document.getElementById('vienna')
+    });
+    main.addOverlay(vienna);
+
+    var popup = new ol.Overlay({
+        element:document.getElementById('popup')
+    });
+
+    main.addOverlay(popup);
+
+    main.on('click', function(evt){
+        var element = popup.getElement();
+        var coordinate = evt.coordinate;
+        var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(coordinate,'EPSG:3857','EPSG:4326'));
+
+        $(element).popover('destroy');
+        popup.setPosition(coordinate);
+
+        $(element).popover({
+            'placement':'top',
+            'animation':false,
+            'html':true,
+            'content':'<code>'+ hdms + '</code>'
+        });
+        $(element).popover('show');
+    });
+</script>
+</body>
+</html>

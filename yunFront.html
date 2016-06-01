@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tiled ArcGIS MapServer</title>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css" type="text/css">
+    <script src="http://openlayers.org/en/v3.16.0/build/ol.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<script>
+    var url = 'http://mt{1,2,3,0}.google.cn/vt/lyrs=m@142&hl=zh-CN&gl=cn&x=[x]&y=[y]&z=[z]&s=Galil';
+
+
+    var map = new ol.Map({
+        layers: new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url:url
+            })
+
+        }),
+        target: 'map',
+        view: new ol.View({
+            projection:'ESPG:4326',
+            center: [0,0],
+            zoom: 4
+        })
+    });
+    var layers = [
+
+        new ol.layer.Tile({
+            extent: [-180, -90, 180, 90],
+            source: new ol.source.TileWMS({
+                url: url
+            })
+        })
+    ];
+</script>
+</body>
+</html>

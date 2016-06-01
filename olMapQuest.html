@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css" type="text/css">
+<title>MapQuest</title>
+</head>
+<body>
+<div id="map" class="map"></div>
+<select name="layers" id="layer-select">
+    <option value="Aerial">影像</option>
+    <option value="Aerialwithlabel">影像label</option>
+    <option value="Road">道路</option>
+</select>
+
+<script src="http://openlayers.org/en/v3.16.0/build/ol.js"></script>
+<script>
+
+//    var layerG = new ol.layer.Group({
+//        style:
+//    })
+
+
+    var main = new ol.Map({
+        layers: [new ol.layer.Tile({
+            style:'Road',
+            source:new ol.source.MapQuest({layer:'osm'})
+        })],
+        target:'map',
+        view: new ol.View({
+            center:[0,0],
+            zoom:2
+        })
+
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.16.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./css/YunGIS_location.css">
+    <title>YunGIS location</title>
+    <style>
+        .ol-popup{
+            position: absolute;
+            background-color: white;
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+            padding: 15px;
+            border-radius: 10px;
+            border:1px solid #cccccc;
+            bottom: 12px;
+            left: -50px;
+            min-width: 280px;
+        }
+        .ol-popup:after, .ol-popup:before{
+            top:100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+        .ol-popup:after{
+            border-top-color: white;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+        .ol-popup-closer{
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            right:8px;
+        }
+        .ol-popup-closer:after{
+            content: "x";
+        }
+
+    </style>
+</head>
+<body>
+<div id="map" class="map">
+    <div id="mouse_position" class="mouse_position"></div>
+    <div id="search_group" class="search">
+        <input type="text" id="search_input" class="search_input" name="si" size="50">
+        <button id="search_button" class="search_button" type="button">Go</button>
+    </div>
+    <!--<button class="push">Push</button>-->
+</div>
+<script src="./js/geocoder.js"></script>
+<script src="http://openlayers.org/en/v3.16.0/build/ol.js"></script>
+<script>
+    var mouseControl = new ol.control.MousePosition({
+        coordinateFormat:ol.coordinate.createStringXY(2),
+        projection:'EPSG:4326',
+        className:'c_mouse_position',
+        target: document.getElementById('mouse_position'),
+        undefinedHTML:'&nbsp;'
+    });
+    var container = document.getElementById('popup');
+    var content   = document.getElementById('popup-content');
+    var closer    = document.getElementById('popup-closer');
+
+    var overlay = new ol.Overlay(({
+        element:container,
+        autoPan:true,
+        autoPanAnimation:{
+            duration:250
+        }
+    }));
+
+//    closer.onclick = null;
+//    closer.onclick = function(){
+//        overlay.setPosition(undefined);
+//        closer.blur();
+//        return false;
+//    };
+
+    var view = new ol.View({
+        center:[0,0],
+        zoom: 2
+    });
+
+    var map = new ol.Map({
+        controls:ol.control.defaults({
+            attributionOptions:({
+                collapsible:false
+            })
+        }).extend([mouseControl]),
+        layers:[new ol.layer.Tile({
+            source:new ol.source.MapQuest({layer:'osm'})
+        })],
+        overlays:[overlay],
+        target:'map',
+        view:view
+    });
+
+    var searchGroup = document.getElementById('search_group');
+    var searchInput= document.getElementById('search_input');
+    var searchBtn = document.getElementById('search_button');
+    var results = null;
+    var geocode = GeocoderJS.createGeocoder('openstreetmap');
+
+//    searchInput.value = 'Honolulu';
+
+
+    var lat = null;
+    var lon= null;
+    var hdms = null;
+
+//    var feature = new ol.
+
+    searchBtn.onclick = function(event){
+
+        geocode.geocode(searchInput.value,function(results){
+//            console.log(results[0]);
+            lat = results[0].latitude;
+            lon = results[0].longitude;
+            hdms = searchInput.value+ " " + lat +" " + lon;
+
+            searchInput.value = lat +" "+ lon;
+
+            view.fit
+
+
+
+        });
+
+
+
+//        content.innerHTML =  hdms ;
+
+
+
+
+
+    };
+
+
+//    var geocode = GeocoderJS.createGeocoder('openstreetmap');
+//    geocode.geocode('Honolulu', function(result){
+//        console.log(result);
+//    });
+
+</script>
+</body>
+</html>
+
+<!--this version can  search  geolocation -->
+
+<!--Honolulu-->
+<!--Shimonoseki-->

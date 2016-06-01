@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yun GIS</title>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.15.1/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./YunGISfront.css" type="text/css">
+
+</head>
+<body>
+<div id="main" class="map">
+    <div id="search_group" class="search">
+        <input type="text" id="search_input" class="search_input">
+        <!--<button id="search_button" class="search_button" type="button">搜索</button>-->
+    </div>
+
+    <!--<div id="popup" class="ol-popup">-->
+        <!--<a href="#" id="popup-closer" class="ol-popup-closer"></a>-->
+        <!--<div id="popup-content" class="popup-content"></div>-->
+    <!--</div>-->
+</div>
+
+<script src="http://openlayers.org/en/v3.15.1/build/ol.js"></script>
+<script>
+    var main = new ol.Map({
+        layers:[new ol.layer.Tile({
+            source:new ol.source.OSM()
+        })],
+        target:'main',
+        view: new ol.View({
+            center:[0,0],
+            zoom:2
+        })
+    });
+</script>
+</body>
+</html>

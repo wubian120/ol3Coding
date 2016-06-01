@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Location</title>
+    <link rel="stylesheet" href="SearchLocation.css">
+    <link rel="stylesheet" href="./css/ol.css">
+</head>
+<body>
+<div id="map" class="map">
+    <div id="mouse_position" class="mouse_position"></div>
+    <div id="search_group" class="search_group">
+        <input type="text" id="search_input" class="search_input" name="si" size="50">
+        <button id="search_button" class="search_button" type="button">Go</button>
+    </div>
+</div>
+<script src="./js/geocoder.js"></script>
+<script src="./js/ol.js"></script>
+<script>
+    var mouse_control = new ol.control.MousePosition({
+        coordinateFormat:ol.coordinate.createStringXY(3),
+        projection:'EPSG:4326',
+        className:'c_mouse_position',
+        target: document.getElementById('mouse_position'),
+        undefinedHTML:'&nbsp;'
+    });
+
+    var v_world = new ol.View({
+        center:[0,0],
+        zoom: 2
+    });
+
+    var map = new ol.Map({
+        target:'map',
+        view:v_world,
+        layers:[new ol.layer.Tile({
+            source:new ol.source.MapQuest({layer:'osm'})
+        })],
+        controls:ol.control.defaults({
+            attributionOptions:({
+                collapsible:false
+            })
+        }).extend([mouse_control])
+    });
+
+    var sGroup = document.getElementById('search_group');
+    var sInput = document.getElementById('search_input');
+    var sBtn   = document.getElementById('search_button');
+    var geocode= GeocoderJS.createGeocoder('openstreetmap');
+
+//    var results = null;
+    var
+            results,
+            focus,
+            feaP,
+            lon,
+            lat,
+            vecl;
+
+    var geoMar = new ol.Feature({
+       type:'geolocation'
+    });
+
+    vecl = new ol.layer.Vector({
+       source:new ol.source.Vector({
+           features:[geoMar],
+       }),
+       style:new ol.style.Style({
+           image:new ol.style.Icon({
+               anchor:[0.5,1],
+               src:'../res/location32.png'
+           })
+       })
+    });
+
+    sBtn.onclick = function(event){
+//        should judge the input:
+//        if input is illegal, or geocode could not find any
+//        should inform user.
+        geocode.geocode(sInput.value,function(results){
+           lat = results[0].latitude;
+           lon = results[0].longitude;
+           sInput.value = lon + " " + lat;
+           focus = new ol.geom.Point(ol.proj.fromLonLat([lon,lat]));
+           feaP = new ol.Feature();
+           feaP.setGeometry(focus);
+           geoMar.setGeometry(focus);
+           map.addLayer(vecl);
+
+           v_world.fit(focus, map.getSize(),
+                   {
+                       padding:[170,50,30,150],
+                       minResolution:50
+                   });
+        });
+
+    };
+</script>
+</body>
+</html>
